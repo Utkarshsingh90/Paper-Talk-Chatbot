@@ -24,7 +24,6 @@ nest_asyncio.apply()
 st.set_page_config(page_title="PaperTalk", page_icon="📄")
 
 # --- Default SVG Icons (Self-Contained) ---
-# These are used directly and do not require an 'assets' folder.
 USER_AVATAR_SVG = """
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -167,14 +166,25 @@ def main():
     with st.sidebar:
         st.title("📄 PaperTalk Menu")
 
-        with st.expander("🔑 API Key Setup", expanded=not st.session_state.api_key):
-            api_key_input = st.text_input("Enter your Google API Key:", type="password", value=st.session_state.api_key)
-            if api_key_input:
-                st.session_state.api_key = api_key_input
-                st.success("API Key saved!", icon="✅")
-            else:
-                st.warning("Please enter your API Key to proceed.")
-
+        # CORRECTED SECTION FOR ROBUST API KEY HANDLING
+        with st.expander("🔑 API Key Setup", expanded=not st.session_state.get("api_key")):
+            try:
+                # This will succeed on Streamlit Cloud if the secret is set
+                st.session_state.api_key = st.secrets["GOOGLE_API_KEY"]
+                st.success("API key loaded from secrets!", icon="✅")
+            except:
+                # This will happen locally if secrets.toml doesn't exist or key is missing
+                api_key_input = st.text_input(
+                    "Enter your Google API Key:",
+                    type="password",
+                    value=st.session_state.get("api_key", "")
+                )
+                if api_key_input:
+                    st.session_state.api_key = api_key_input
+                    st.success("API Key saved!", icon="✅")
+                else:
+                    st.warning("Please enter your API Key to proceed.")
+        
         with st.expander("📁 Documents & History", expanded=True):
             pdf_docs = st.file_uploader("Upload your PDF Files", accept_multiple_files=True)
             if st.button("Submit & Process Documents"):
