@@ -1,0 +1,9 @@
+# Virtual Environment
+venv/
+*.pyc
+
+# FAISS index
+faiss_index/
+
+# Streamlit config
+.streamlit/secrets.toml
