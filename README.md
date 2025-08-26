@@ -74,5 +74,5 @@ Try the app instantly:
 **[PaperTalk · Streamlit](https://paper-talk-chatbot.streamlit.app/)**
 
 ---
-![PaperTalk Homepage](images/homepage.png)
+![PaperTalk Homepage](homepage.png)
  
